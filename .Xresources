@@ -1,0 +1,71 @@
+
+#include "colors/colors.h"
+
+! special
+*.foreground:   COLOR15
+*.background:   BACKGROUND
+*.cursorColor:  FOREGROUND
+
+! black
+*.color0:       COLOR0
+*.color8:       COLOR8
+
+! red
+*.color1:       COLOR1
+*.color9:       COLOR9
+
+! green
+*.color2:       COLOR2
+*.color10:      COLOR10
+
+!! yellow
+*.color3:       COLOR3
+*.color11:      COLOR11
+
+! blue
+*.color4:       COLOR4
+*.color12:      COLOR12
+
+! magenta
+*.color5:       COLOR5
+*.color13:      COLOR13
+
+! cyan
+*.color6:       COLOR6
+*.color14:      COLOR14
+
+! white
+*.color7:       COLOR7
+*.color15:      COLOR15
+
+!!! URxvt
+URxvt.scrollBar: false
+
+! Font stuff
+!URxvt.font: xft:DejaVu Sans Mono:size=12
+URxvt.font: xft:Droid Sans Mono:size=12:antialias=true
+URxvt.letterSpace: -1
+URxvt.boldFont:
+URxvt.italicFont:
+URxvt.boldItalicFont:
+
+!URxvt.transparent: true
+!URxvt.shading: 20
+
+! Cursor
+URxvt.cursorBlink: true
+
+! Background
+!URxvt.background: #800080
+
+! Perl scripts
+URxvt.perl-ext-common: resize-font
+
+! Restore copy and paste (no middle mouse)
+!URxvt.keysym.Shift-Control-c: eval:selection_to_clipboard
+!URxvt.keysym.Shift-Control-v: eval:paste_clipboard
+!URxvt.keysym.Control-Meta-c: builtin-string:
+!URxvt.keysym.Control-Meta-v: builtin-string:
+URxvt.iso14755: false
+URxvt.iso14755_52: false
+

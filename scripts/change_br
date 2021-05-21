@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Adjust backlight brightness
+# change_br {-i|-d|-s|-M|-m} [percent=10]
+
+# Get mode
+case $1 in
+    -i) mode="i" ;;
+    -d) mode="d" ;;
+    -M) mode="M" ;;
+    -m) mode="m" ;;
+    -s) mode="s" ;;
+     *) mode="" ;;
+esac
+
+[[ -z $mode ]] && { echo "missing option"; exit 1; } 
+
+# Increment or decrement amount
+default=10
+amount=${2:-$default}
+
+path=/sys/class/backlight/intel_backlight
+
+cur=$(cat $path/brightness)
+max=$(cat $path/max_brightness)
+min=100
+
+case $mode in
+    i) new=$(( $cur + $max * $amount / 100 )) ;;
+    d) new=$(( $cur - $max * $amount / 100 )) ;; 
+    M) new=$max ;;
+    m) new=$min ;;
+    s) new=$(( $max * $amount / 100 )) ;;
+esac
+
+if (( $new > $max )); then
+    new=$max
+fi
+
+if (( $new < $min )); then
+    new=$min
+fi
+
+echo $new > $path/brightness

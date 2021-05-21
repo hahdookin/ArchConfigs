@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Make backups of all configs and dotfiles:
+# my_configs.vim, dwm/dmenu config.h, .inputrc, .Xresources,
+# .xinitrc, scripts/*, colors/updateColors
+
+[[ $(whoami) != "root" ]] && { echo "Please run as root."; exit 1; }
+
+root_home=/root
+user_home=/home/chris
+backups_dir=$user_home/backups
+
+# Files in home dir
+cat $user_home/.Xresources > $backups_dir/.Xresources
+cat $user_home/.bashrc > $backups_dir/.bashrc
+cat $user_home/.inputrc > $backups_dir/.inputrc
+cat $user_home/.xinitrc > $backups_dir/.xinitrc
+
+# Vim configs
+cat $user_home/.vim_runtime/my_configs.vim > $backups_dir/my_configs.vim
+
+# Suckless utils configs
+cat $root_home/dwm/config.h > $backups_dir/dwm/config.h 
+cat $root_home/dmenu/config.h > $backups_dir/dmenu/config.h 
+
+# Scripts
+for file in $user_home/scripts/*; do
+    cat "$file" > $backups_dir/scripts/${file##*/}
+done
+#cat $user_home/scripts/change_br > $backups_dir/scripts/change_br
+#cat $user_home/scripts/change_vol > $backups_dir/scripts/change_vol
+#cat $user_home/scripts/dmenu_firefox_search > $backups_dir/scripts/dmenu_firefox_search
+#cat $user_home/scripts/grab_nyse_price_webscrape > $backups_dir/scripts/grab_nyse_price_webscrape
+#cat $user_home/scripts/update_status_bar > $backups_dir/scripts/update_status_bar

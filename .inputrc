@@ -1,0 +1,22 @@
+$include /etc/inputrc
+
+# Options
+set colored-stats on
+set completion-ignore-case on
+set completion-prefix-display-length 3
+set mark-symlinked-directories on
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set visible-stats on
+
+# Change cursor in editing mode
+set editing-mode vi
+set show-mode-in-prompt on
+set vi-ins-mode-string \1\e[6 q\2
+set vi-cmd-mode-string \1\e[2 q\2
+set keymap vi-insert
+RETURN: "\e\n"
+
+# Bindings
+#"\eo":"~/scripts/dmenu_firefox_search \n"
+

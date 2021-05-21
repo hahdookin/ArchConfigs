@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Updates information in status bar.
+# Called from .xinitrc
+
+source ~/scripts/grab_nyse_price_webscrape
+
+# Ticker symbols to check prices of
+symbols=(
+    "SPOT"
+    "DASH"
+    "CHWY"
+)
+prices=( )
+last=0
+
+# Update if: first run through program or during 
+# market hours and been 10 mins since last update
+update_prices() {
+    time_info=( $(date +'%H %u %s') )
+    hour=${time_info[0]}
+    weekday=${time_info[1]}
+    now=${time_info[2]}
+
+    first_run=$(( $last == 0 )) 
+    trading_hours=$(( $weekday < 6 && $hour > 9 && $hour < 16 && $now - $last > 600 )) 
+    if (( $first_run || $trading_hours )); then
+        for (( i=0; i < ${#symbols[@]}; i++ )); do
+            prices[$i]=$(grab_nyse_price_webscrape ${symbols[$i]})
+        done
+        last=$now
+    fi
+}
+
+update_status_bar() {
+    # Build up this string
+    res=""
+    delim=" | "
+
+    # Nyse stock price 
+    update_prices
+    for (( i=0; i < ${#symbols[@]}; i++ )); do
+        res+="${symbols[$i]}: ${prices[$i]}"
+        res+=$delim
+    done
+
+    # Time & date
+    res+=$(date +'%a %b %d %I:%M %p')
+    res+=$delim
+
+    # Battery info
+    b_info=$(acpi -b)
+    percent=$(echo $b_info | sed 's/.*\ \([0-9]*%\).*/\1/g')
+    [[ $b_info =~ Charging ]] && res+="+"
+    res+=$percent
+
+    # Finally, update the status bar content
+    xsetroot -name " $res "
+}
+
+while :
+do
+    update_status_bar
+    sleep 30
+done
+

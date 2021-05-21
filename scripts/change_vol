@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Adjust backlight brightness
+# change_vol {-i|-d|-s} [percent=100]
+# change_vol -m
+
+# Get mode
+case $1 in
+    -i) mode="i" ;;
+    -d) mode="d" ;;
+    -s) mode="s" ;;
+    -m) mode="m" ;;
+     *) mode=""  ;;
+esac
+
+[[ -z $mode ]] && { echo "missing option"; exit 1; } 
+
+# off if muted, on if unmuted
+cur_mute=$(amixer get Master | grep \[o[fn]*\] | sed 's/.*\[\(o[nf]*\)\].*/\1/g')
+mute_set=$([[ $cur_mute == "on" ]] && echo mute || echo unmute)
+
+# If doing mute, handle mute and exit
+[[ $mode == m ]] && { amixer set -q Master $mute_set; exit 1; }
+
+# Increment or decrement amount
+default=10
+amount=${2:-$default}
+
+cur=$(amixer get Master | grep \[[0-9]*%\] | sed 's/.* \[\([0-9]*\)%\].*/\1/g')
+
+case $mode in
+    i) new=$(( $cur + $amount )) ;;
+    d) new=$(( $cur - $amount )) ;;
+    s) new=$amount ;;
+esac
+
+if (( $new < 0 )); then
+    new=0
+fi
+echo "Changing vol to $new%"
+amixer set -q Master "$new%" 
