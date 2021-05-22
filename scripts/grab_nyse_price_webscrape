@@ -3,26 +3,10 @@
 # Scrapes Yahoo Finance's stock page for
 # a ticker symbol and grabs the price.
 # Called in update_status_bar
-
-#symbols=(
-#    "SPOT"
-#    "DASH"
-#    "CHWY"
-#)
-#prices=( )
-
-#last=0
-
-#time_info=( $(date +'%H %u %s') )
-#hour=${time_info[0]}
-#weekday=${time_info[1]}
-#now_seconds=${time_info[2]}
-#(( $hour > 9 && $hour < 20 && $weekday < 6)) && \
-#(( $now_seconds - $last > 60 )) && \
-  
+ 
 grab_nyse_price_webscrape() {
 
-    [[ -z $1 ]] && { echo missing option; return; }
+    [[ -z $1 ]] && { echo "missing option"; return; }
 
     symb=$1
 

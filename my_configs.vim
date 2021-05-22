@@ -1,10 +1,14 @@
 set number relativenumber
 set nu rnu
 
-colorscheme peachpuff
-set bg=light
+"colorscheme peachpuff
+"set bg=light
 syntax enable
-colorscheme peaksea
+"colorscheme peaksea
+set t_Co=256
+set t_ut=
+"let g:codedark_conservative = 1
+colorscheme codedark
 
 set belloff=all
 
@@ -19,14 +23,14 @@ endfunction
 map <F2> :call SwapBG()<CR>
 
 " Auto light/dark mode
-let s:hour = str2nr(system("date +'%H'"))
-let s:lower = 8
-let s:upper = 20
-if s:hour <= s:lower || s:hour >= s:upper
-    set bg=dark
-else
-    set bg=light
-endif
+"let s:hour = str2nr(system("date +'%H'"))
+"let s:lower = 8
+"let s:upper = 20
+"if s:hour <= s:lower || s:hour >= s:upper
+    "set bg=dark
+"else
+    "set bg=light
+"endif
 
 " Remove SnipMate deprecate msg
 let g:snipMate = { 'snippet_version' : 0 }
