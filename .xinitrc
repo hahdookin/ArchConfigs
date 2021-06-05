@@ -4,4 +4,4 @@ xrdb ~/.Xresources &
 ~/scripts/update_status_bar &
 
 # Run X programs
-exec dwm
+exec dbus-launch dwm

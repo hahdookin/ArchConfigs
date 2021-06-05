@@ -44,7 +44,7 @@ URxvt.scrollBar: false
 ! Font stuff
 !URxvt.font: xft:DejaVu Sans Mono:size=12
 URxvt.font: xft:Droid Sans Mono:size=12:antialias=true
-URxvt.letterSpace: -1
+URxvt.letterSpace: 0
 URxvt.boldFont:
 URxvt.italicFont:
 URxvt.boldItalicFont:

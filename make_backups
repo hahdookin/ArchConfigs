@@ -19,6 +19,10 @@ cat $user_home/.xinitrc > $backups_dir/.xinitrc
 # Vim configs
 cat $user_home/.vim_runtime/my_configs.vim > $backups_dir/my_configs.vim
 
+# .config dir configs
+cat $user_home/.config/nvim/init.vim > $backups_dir/nvim/init.vim
+cat $user_home/.config/ranger/rc.conf > $backups_dir/ranger/rc.conf
+
 # Suckless utils configs
 cat $root_home/dwm/config.h > $backups_dir/dwm/config.h 
 cat $root_home/dmenu/config.h > $backups_dir/dmenu/config.h 
@@ -27,8 +31,3 @@ cat $root_home/dmenu/config.h > $backups_dir/dmenu/config.h
 for file in $user_home/scripts/*; do
     cat "$file" > $backups_dir/scripts/${file##*/}
 done
-#cat $user_home/scripts/change_br > $backups_dir/scripts/change_br
-#cat $user_home/scripts/change_vol > $backups_dir/scripts/change_vol
-#cat $user_home/scripts/dmenu_firefox_search > $backups_dir/scripts/dmenu_firefox_search
-#cat $user_home/scripts/grab_nyse_price_webscrape > $backups_dir/scripts/grab_nyse_price_webscrape
-#cat $user_home/scripts/update_status_bar > $backups_dir/scripts/update_status_bar

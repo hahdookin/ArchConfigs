@@ -23,13 +23,14 @@ last=0
 # if it is the first run through the program or
 # it is trading hours and its been 10 mins since last update
 update_prices() {
-    time_info=( $(date +'%H %u %s') )
+    time_info=( $(date +'%-H %u %s') )
     hour=${time_info[0]}
     weekday=${time_info[1]}
     now=${time_info[2]}
+    #[[ $hour =~ ^0 ]] && hour=${hour#0}
 
     first_run=$(( $last == 0 )) 
-    trading_hours=$(( $weekday < 6 && $hour > 9 && $hour < 16 && $now - $last > 600 )) 
+    trading_hours=$(( $weekday < 6 && $hour >= 9 && $hour < 16 && $now - $last > 600 )) 
     if (( $first_run || $trading_hours )); then
         for (( i=0; i < ${#symbols[@]}; i++ )); do
             prev[$i]=${prices[$i]}
