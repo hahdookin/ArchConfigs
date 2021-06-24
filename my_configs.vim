@@ -36,7 +36,7 @@ endfunction
 
 """ Key mappings
 " Buffer traversal stuff
-map <F2> :call SwapBG()<CR>
+"map <F2> :call SwapBG()<CR>
 map <F3> :bprev<CR>
 map <F4> :bnext<CR>
 nnoremap gb :ls<CR>:b  

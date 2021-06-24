@@ -25,8 +25,11 @@ NeoBundle 'octol/vim-cpp-enhanced-highlight'
 
 " Treesitter stuff
 NeoBundle 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" LSP stuff
 NeoBundle 'neovim/nvim-lspconfig'
 NeoBundle 'hrsh7th/nvim-compe'
+NeoBundle 'ray-x/lsp_signature.nvim'
 
 
 " You can specify revision/branch/tag.
@@ -55,6 +58,17 @@ source ~/.vim_runtime/my_configs.vim
 catch
 endtry
 
+" ----------
+"  Terminal settings
+" ----------
+"  Window navigation
+tnoremap <c-h> <c-\><c-n><c-w>h
+tnoremap <c-j> <c-\><c-n><c-w>j
+tnoremap <c-k> <c-\><c-n><c-w>k
+tnoremap <c-l> <c-\><c-n><c-w>l
+
+" Remap escape
+tnoremap <leader><Esc> <c-\><c-n>
 
 " ----------
 "  Compe settings
@@ -107,6 +121,7 @@ lua require'lspconfig'.pyright.setup{}
 " Rust
 lua require'lspconfig'.rust_analyzer.setup{}
 
-
 " Disable inline error/warning messages
 lua vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
+
+lua require'lsp_signature'.on_attach()
