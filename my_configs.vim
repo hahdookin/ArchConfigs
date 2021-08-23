@@ -1,6 +1,7 @@
 """ General settings
 set number relativenumber
 set nu rnu
+set cursorline
 
 " Make vim prefer a buffer already open
 set switchbuf=useopen,usetab,newtab
@@ -13,10 +14,6 @@ let g:snipMate = { 'snippet_version' : 0 }
 
 
 """ Colorscheme stuff
-"colorscheme peachpuff
-"set bg=light
-"syntax enable
-"colorscheme peaksea
 syntax enable
 set t_Co=256
 set t_ut=
@@ -37,7 +34,13 @@ endfunction
 """ Key mappings
 " Buffer traversal stuff
 "map <F2> :call SwapBG()<CR>
-map <F3> :bprev<CR>
-map <F4> :bnext<CR>
+nnoremap <F3> :bprev<CR>
+nnoremap <F4> :bnext<CR>
 nnoremap gb :ls<CR>:b  
+nnoremap <leader>tt :split term://bash<CR>10<C-W>-<C-W>r
 
+" Make Y behave like D and C
+nnoremap Y y$
+
+" Make gf open files in new tabs
+nnoremap <leader>gf <C-W>gf

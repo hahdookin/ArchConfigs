@@ -24,10 +24,11 @@ last=0
 # it is trading hours and its been 10 mins since last update
 update_prices() {
     time_info=( $(date +'%-H %u %s') )
+
+    # "Destructure" time_info as hour, weekday, and seconds
     hour=${time_info[0]}
     weekday=${time_info[1]}
     now=${time_info[2]}
-    #[[ $hour =~ ^0 ]] && hour=${hour#0}
 
     first_run=$(( $last == 0 )) 
     trading_hours=$(( $weekday < 6 && $hour >= 9 && $hour < 16 && $now - $last > 600 )) 
@@ -45,14 +46,14 @@ update_status_bar() {
     res=""
     delim=" | "
 
-    # Nyse stock price 
+    # NYSE stock price 
     update_prices
     for (( i=0; i < ${#symbols[@]}; i++ )); do
         # Choose plus or minus to indicate up or down
-        price_up=$(python -c "print(int(${prices[$i]} > ${prev[$i]:-0}))")
-        (( $price_up )) && sign='+' || sign='-'
-
-        res+="${symbols[$i]}: ${sign}${prices[$i]}"
+        #price_up=$(python -c "print(int(${prices[$i]} > ${prev[$i]:-0}))")
+        #(( $price_up )) && sign='+' || sign='-'
+        #res+="${symbols[$i]}: ${sign}${prices[$i]}"
+        res+="${symbols[$i]}: ${prices[$i]}"
         res+=$delim
     done
 
@@ -65,7 +66,7 @@ update_status_bar() {
       | grep '\[o.*\]'  \
       | sed 's/.*\[\([0-9]\+%\)\].*\[\(o[nf]\+\)\].*/\1 \2/g' \
     )
-    v_info=( $v_info ) 
+    v_info=( $v_info ) # v_info as array, to "destructure"
     res+=${v_info[0]}
     res+=" "
     res+=${v_info[1]}

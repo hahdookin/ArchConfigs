@@ -16,7 +16,7 @@ cat $user_home/.bashrc > $backups_dir/.bashrc
 cat $user_home/.inputrc > $backups_dir/.inputrc
 cat $user_home/.xinitrc > $backups_dir/.xinitrc
 
-# Vim configs
+# Extra Vim configs
 cat $user_home/.vim_runtime/my_configs.vim > $backups_dir/my_configs.vim
 
 # .config dir configs

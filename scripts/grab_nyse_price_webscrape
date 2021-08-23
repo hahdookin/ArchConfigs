@@ -10,11 +10,12 @@ grab_nyse_price_webscrape() {
 
     symb=$1
 
+    reactid="49" # could be 50 sometimes
+
     price=$(curl -s https://finance.yahoo.com/quote/${symb} \
-      | grep 'data-reactid="50"' \
-      | sed 's/.*data-reactid="50">\([0-9]*\.[0-9][0-9]\)<.*/\1/g' \
+      | grep "data-reactid=\"${reactid}\"" \
+      | sed "s/.*data-reactid=\"${reactid}\">\([0-9]*\.[0-9][0-9]\)<.*/\1/g" \
     )
 
     echo $price
 }
-

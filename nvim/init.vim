@@ -25,6 +25,7 @@ NeoBundle 'octol/vim-cpp-enhanced-highlight'
 
 " Treesitter stuff
 NeoBundle 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+NeoBundle 'nvim-treesitter/playground'
 
 " LSP stuff
 NeoBundle 'neovim/nvim-lspconfig'
@@ -57,6 +58,18 @@ try
 source ~/.vim_runtime/my_configs.vim
 catch
 endtry
+
+" Enable tree-sitter
+lua <<EOF
+  require'nvim-treesitter.configs'.setup {
+    ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+    ignore_install = {}, -- List of parsers to ignore installing
+    highlight = {
+      enable = true,              -- false will disable the whole extension
+      disable = {},  -- list of language that will be disabled
+    },
+  }
+EOF
 
 " ----------
 "  Terminal settings
@@ -116,7 +129,7 @@ lua require'lspconfig'.bashls.setup{}
 lua require'lspconfig'.clangd.setup{}
 
 " Python
-lua require'lspconfig'.pyright.setup{}
+lua require'lspconfig'.pyls.setup{}
 
 " Rust
 lua require'lspconfig'.rust_analyzer.setup{}
@@ -125,3 +138,4 @@ lua require'lspconfig'.rust_analyzer.setup{}
 lua vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
 
 lua require'lsp_signature'.on_attach()
+

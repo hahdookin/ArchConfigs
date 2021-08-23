@@ -43,8 +43,8 @@ URxvt.scrollBar: false
 
 ! Font stuff
 !URxvt.font: xft:DejaVu Sans Mono:size=12
-!URxvt.font: xft:Droid Sans Mono:size=12:antialias=true
 URxvt.font: xft:Droid Sans Mono:size=12:antialias=true
+!URxvt.font: xft:Fixedsys Excelsior
 URxvt.letterSpace: 0
 URxvt.boldFont:
 URxvt.italicFont:
