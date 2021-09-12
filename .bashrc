@@ -16,10 +16,14 @@ export EDITOR=/usr/bin/nvim
 # Aliases
 alias ls='ls -F --color=auto'
 alias la='ls -a -F --color=auto'
+alias ll='ls -a -l -F --color=auto'
 alias vi='nvim'
 alias vim='nvim'
 alias mutt='neomutt'
 alias mail='neomutt'
 alias vol='alsamixer'
 alias mm='make && ./main'
+
 . "$HOME/.cargo/env"
+
+[[ -f "$HOME/sshkeys" ]] && source "$HOME/sshkeys"

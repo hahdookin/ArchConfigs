@@ -2,11 +2,12 @@
 
 # Use default search engine of web browser to search for query
 
-dmenuFirefoxSearch() {
+#dmenuFirefoxSearch() {
+dmenu_firefox_search() {
   do_nothing() { return; }
   local query=$(do_nothing | dmenu -p "Search:")
   [[ $query =~ ^[[:space:]]*$ ]] && return
   firefox --search "$query" &
 }
 
-dmenuFirefoxSearch
+dmenu_firefox_search

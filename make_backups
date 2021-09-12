@@ -27,6 +27,10 @@ cat $user_home/.config/ranger/rc.conf > $backups_dir/ranger/rc.conf
 cat $root_home/dwm/config.h > $backups_dir/dwm/config.h 
 cat $root_home/dmenu/config.h > $backups_dir/dmenu/config.h 
 
+# .notes Vim syntax highlighting
+cat /usr/share/nvim/runtime/syntax/notes.vim > $backups_dir/nvim/notes.vim
+cat $user_home/.config/nvim/ftdetect/notes.vim > $backups_dir/nvim/ftnotes.vim
+
 # Scripts
 for file in $user_home/scripts/*; do
     cat "$file" > $backups_dir/scripts/${file##*/}

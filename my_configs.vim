@@ -1,6 +1,5 @@
 """ General settings
 set number relativenumber
-set nu rnu
 set cursorline
 
 " Make vim prefer a buffer already open
@@ -38,6 +37,7 @@ nnoremap <F3> :bprev<CR>
 nnoremap <F4> :bnext<CR>
 nnoremap gb :ls<CR>:b  
 nnoremap <leader>tt :split term://bash<CR>10<C-W>-<C-W>r
+nnoremap <silent><leader>no :noh<CR>
 
 " Make Y behave like D and C
 nnoremap Y y$

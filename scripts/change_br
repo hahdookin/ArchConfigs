@@ -5,11 +5,11 @@
 
 # Get mode
 case $1 in
-    -i) mode="i" ;;
-    -d) mode="d" ;;
-    -M) mode="M" ;;
-    -m) mode="m" ;;
-    -s) mode="s" ;;
+    -i) mode="i" ;; # increase
+    -d) mode="d" ;; # decrease
+    -M) mode="M" ;; # max
+    -m) mode="m" ;; # min
+    -s) mode="s" ;; # set
      *) mode="" ;;
 esac
 

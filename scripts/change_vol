@@ -6,10 +6,10 @@
 
 # Get mode
 case $1 in
-    -i) mode="i" ;;
-    -d) mode="d" ;;
-    -s) mode="s" ;;
-    -m) mode="m" ;;
+    -i) mode="i" ;; # increase
+    -d) mode="d" ;; # decrease
+    -s) mode="s" ;; # set
+    -m) mode="m" ;; # toggle mute
      *) mode=""  ;;
 esac
 
