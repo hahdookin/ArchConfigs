@@ -23,7 +23,14 @@ alias mutt='neomutt'
 alias mail='neomutt'
 alias vol='alsamixer'
 alias mm='make && ./main'
+alias canvas='(firefox --new-window "https://njit.instructure.com/?login_success=1" & disown) > /dev/null 2>&1'
+
+alias lisp='sbcl'
+alias prolog='swi-prolog'
 
 . "$HOME/.cargo/env"
 
 [[ -f "$HOME/sshkeys" ]] && source "$HOME/sshkeys"
+source /usr/share/fzf/completion.bash && source /usr/share/fzf/key-bindings.bash
+
+alias todo=~/tests/rusttest/a/target/debug/a

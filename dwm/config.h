@@ -16,9 +16,9 @@ static const char col_cyan[]        = "#005577";
 /* My colors */
 #include "colors.h"
 static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { colors_white15, colors_background, col_gray2 },
-	[SchemeSel]  = { colors_background, colors_yellow3, colors_red1 }, 
+	/*               fg                 bg                 border   */
+	[SchemeNorm] = { colors_white15,    colors_background, col_gray2 },
+	[SchemeSel]  = { colors_background, colors_yellow3,    colors_red1 }, 
 	/* [SchemeNorm] = { col_gray3, col_gray1, col_gray2 }, */ 
 	/* [SchemeSel]  = { col_gray4, col_cyan,  col_cyan  }, */
 };
@@ -67,11 +67,11 @@ static const char *termcmd[]  = { "urxvt", NULL };
 
 /* My commands */
 static const char *dmenufirefoxsearch[] = { "/home/chris/scripts/dmenu_firefox_search", NULL };	 
-static const char *brincrease[] = { "/home/chris/scripts/change_br", "-i", "5", NULL };	 
-static const char *brdecrease[] = { "/home/chris/scripts/change_br", "-d", "5", NULL };	 
-static const char *volincrease[] = { "/home/chris/scripts/change_vol", "-i", "2", NULL };	 
-static const char *voldecrease[] = { "/home/chris/scripts/change_vol", "-d", "2", NULL };	 
-static const char *voltogglemute[] = { "/home/chris/scripts/change_vol", "-m", NULL };
+static const char *brincrease[]         = { "/home/chris/scripts/change_br", "-i", "5", NULL };	 
+static const char *brdecrease[]         = { "/home/chris/scripts/change_br", "-d", "5", NULL };	 
+static const char *volincrease[]        = { "/home/chris/scripts/change_vol", "-i", "2", NULL };	 
+static const char *voldecrease[]        = { "/home/chris/scripts/change_vol", "-d", "2", NULL };	 
+static const char *voltogglemute[]      = { "/home/chris/scripts/change_vol", "-m", NULL };
 
 /* Acer Aspire E 15 Arrow fn Keys */
 const int FN_LEFT  = 0x1008ff03;
@@ -115,13 +115,14 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+
 	/* My keys */
 	{ MODKEY,                       XK_o,      spawn,          {.v = dmenufirefoxsearch } },
 	{ NULL,                         FN_LEFT,   spawn,          {.v = brdecrease } },
 	{ NULL,                         FN_RIGHT,  spawn,          {.v = brincrease } },
 	{ NULL,                         FN_UP,     spawn,          {.v = volincrease } },
 	{ NULL,                         FN_DOWN,   spawn,          {.v = voldecrease } },
-	{ NULL,                         FN_F8,   spawn,          {.v = voltogglemute } },
+	{ NULL,                         FN_F8,     spawn,          {.v = voltogglemute } },
 
 };
 
