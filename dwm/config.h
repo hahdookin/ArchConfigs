@@ -17,8 +17,8 @@ static const char col_cyan[]        = "#005577";
 #include "colors.h"
 static const char *colors[][3]      = {
 	/*               fg                 bg                 border   */
-	[SchemeNorm] = { colors_white15,    colors_background, col_gray2 },
-	[SchemeSel]  = { colors_background, colors_yellow3,    colors_red1 }, 
+	[SchemeNorm] = { COLOR15,    BACKGROUND, col_gray2 },
+	[SchemeSel]  = { BACKGROUND, COLOR3,    COLOR1 }, 
 	/* [SchemeNorm] = { col_gray3, col_gray1, col_gray2 }, */ 
 	/* [SchemeSel]  = { col_gray4, col_cyan,  col_cyan  }, */
 };
@@ -63,7 +63,8 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "urxvt", NULL };
+//static const char *termcmd[]  = { "urxvt", NULL };
+static const char *termcmd[]  = { "st", NULL };
 
 /* My commands */
 static const char *dmenufirefoxsearch[] = { "/home/chris/scripts/dmenu_firefox_search", NULL };	 

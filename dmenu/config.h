@@ -10,12 +10,11 @@ static const char *prompt      = NULL;      /* -p  option; prompt to the left of
 
 /* My colors */
 #include "colors.h"
-
 static const char *colors[SchemeLast][2] = {
-	/*     fg         bg       */
-	[SchemeNorm] = { colors_foreground, colors_background },
-	[SchemeSel] = { colors_background, colors_yellow3 },
-	[SchemeOut] = { colors_background, colors_yellow3 },
+	          /*     fg          bg       */
+	[SchemeNorm] = { FOREGROUND, BACKGROUND },
+	[SchemeSel]  = { BACKGROUND, COLOR3 },
+	[SchemeOut]  = { BACKGROUND, COLOR3 },
 	/*[SchemeNorm] = { "#bbbbbb", "#222222" },
 	[SchemeSel] = { "#eeeeee", "#005577" },
 	[SchemeOut] = { "#000000", "#00ffff" },*/

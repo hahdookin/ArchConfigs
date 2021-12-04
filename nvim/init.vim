@@ -14,11 +14,6 @@ call neobundle#begin(expand('/home/chris/.config/nvim/bundle'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Add or remove your Bundles here:
-"NeoBundle 'Shougo/neosnippet.vim'
-"NeoBundle 'Shougo/neosnippet-snippets'
-"NeoBundle 'tpope/vim-fugitive'
-"NeoBundle 'ctrlpvim/ctrlp.vim'
-"NeoBundle 'flazz/vim-colorschemes'
 NeoBundle 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
 NeoBundle 'tomasiser/vim-code-dark'
 NeoBundle 'octol/vim-cpp-enhanced-highlight'
@@ -53,14 +48,7 @@ NeoBundleCheck
 set runtimepath+=~/.vim_runtime
 
 source ~/.vim_runtime/vimrcs/basic.vim
-source ~/.vim_runtime/vimrcs/filetypes.vim
 source ~/.vim_runtime/vimrcs/plugins_config.vim
-source ~/.vim_runtime/vimrcs/extended.vim
-
-try
-source ~/.vim_runtime/my_configs.vim
-catch
-endtry
 
 " Enable tree-sitter
 lua <<EOF
@@ -74,9 +62,9 @@ lua <<EOF
   }
 EOF
 
-" ----------
+" ====================================
 "  Terminal settings
-" ----------
+" ====================================
 "  Window navigation
 tnoremap <c-h> <c-\><c-n><c-w>h
 tnoremap <c-j> <c-\><c-n><c-w>j

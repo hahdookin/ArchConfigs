@@ -1,0 +1,5 @@
+--exclude=Makefile
+--exclude=*.o
+--exclude=.git
+
+--recurse=yes

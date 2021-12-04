@@ -1,0 +1,21 @@
+#!/bin/bash
+
+oldIFS=$IFS
+IFS=$'\n'
+
+lines=$( (curl --silent https://docs.unity3d.com/ScriptReference/Collider2D.html) )
+
+at_desc=0
+for line in ${lines[@]}; do
+    if (( at_desc )); then
+        # we are at the part of the file containing info we need
+        #echo $line | grep -shoP '<.*?>.*?</.*?>' | sed 's/>\(.*\)</\1/'
+        content=$(echo $line | sed -e 's/<[^>]*>//g')
+    else
+        if [[ $line =~ '<h3>Description</h3>' ]]; then
+            at_desc=1
+        fi
+    fi
+done
+
+IFS=$oldIFS

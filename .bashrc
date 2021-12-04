@@ -34,3 +34,16 @@ alias prolog='swi-prolog'
 source /usr/share/fzf/completion.bash && source /usr/share/fzf/key-bindings.bash
 
 alias todo=~/tests/rusttest/a/target/debug/a
+
+# $1 number to convert
+# $2 base to convert to (default 2)
+# $3 pad front until total length is `width`
+function base() {
+    [[ -z $1 ]] && { echo "usage: base number [base [width]]"; return; }
+    local num=$1
+    local to=${2:-2}
+    local width=${3:-0}
+    node -p "let x=Number($num).toString($to);let s='';if($width -x.length>0)[...Array($width -x.length)].forEach(()=>s+='0');s+x;"
+}
+
+export FZF_DEFAULT_COMMAND="find -L"
