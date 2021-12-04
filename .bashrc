@@ -47,3 +47,6 @@ function base() {
 }
 
 export FZF_DEFAULT_COMMAND="find -L"
+
+# to use for getting branch name in PS1
+# git branch | grep '^\*' | sed 's/^\*\s//g'

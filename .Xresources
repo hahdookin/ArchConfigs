@@ -1,5 +1,5 @@
 
-#include "colors/colors.h"
+#include "colors/colors_X.h"
 
 ! special
 *.foreground:   COLOR15
