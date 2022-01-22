@@ -95,6 +95,7 @@ set foldcolumn=1
 syntax enable 
 set t_Co=256
 set t_ut=
+set termguicolors
 colorscheme codedark
 
 set clipboard+=unnamedplus
@@ -159,10 +160,26 @@ nnoremap Y y$
 nnoremap gt :bnext<CR>
 nnoremap gT :bprev<CR>
 
-" FZF in cur dir
-nnoremap <leader>ff :FZF<CR>
+" FZF buffers
+nnoremap <leader>ff :Buffers<CR>
+nnoremap <leader>fl :Lines<CR>
+nnoremap <leader>fg :call FuzzyFiles()<CR>
+
+function FuzzyFiles()
+    GFiles
+    " Error 128 occurs when not in Git repo path
+    if v:shell_error == 128
+        Files
+    endif
+endfunction
+
+" FZF in cur (d)ir
+nnoremap <leader>fd :FZF<CR>
 " FZF (i)n 
 nnoremap <leader>fi :FZF 
+
+" So much better but may affect a lot of stuff
+" map '' ``
 
 " vimgrep 
 command! -nargs=* FindSymbol execute "vim" . " '<args>' " .  join(BuffersList())
@@ -349,3 +366,15 @@ let vim_markdown_folding_disabled = 1
 
 " Remove SnipMate deprecate msg
 let g:snipMate = { 'snippet_version' : 0 }
+
+function StreamerMode()
+    " 13 pluses
+    set norelativenumber
+    set showtabline=0
+    set scrolloff=0
+    set nocursorline
+
+    " Disable completion menu
+    set completeopt=
+    call compe#setup({'enabled':v:false})
+endfunction

@@ -5,9 +5,22 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+parse_git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
 
 # Name infront of command line prompt
-export PS1="\[\033[38;5;202m\][\[$(tput sgr0)\]\[\033[38;5;214m\]\u\[$(tput sgr0)\]\[\033[38;5;106m\]@\[$(tput sgr0)\]\[\033[38;5;73m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;212m\]\W\[$(tput sgr0)\]\[\033[38;5;202m\]]\[$(tput sgr0)\]\\$ \[$(tput sgr0)\]"
+#export PS1="\[\033[38;5;202m\][\[$(tput sgr0)\]\[\033[38;5;214m\]\u\[$(tput sgr0)\]\[\033[38;5;106m\]@\[$(tput sgr0)\]\[\033[38;5;73m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;212m\]\W\[$(tput sgr0)\]\[\033[38;5;202m\]]\[$(tput sgr0)\]\$(parse_git_branch)\[\033[00m\]\$ \[$(tput sgr0)\]"
+export PS1=""
+PS1+="\[\033[38;5;202m\][\[$(tput sgr0)\]"   # [
+PS1+="\[\033[38;5;214m\]\u\[$(tput sgr0)\]"  # chris
+PS1+="\[\033[38;5;106m\]@\[$(tput sgr0)\]"   # @
+PS1+="\[\033[38;5;73m\]\h\[$(tput sgr0)\]"   # host
+PS1+=" \[$(tput sgr0)\]"                     # space
+PS1+="\[\033[38;5;212m\]\W\[$(tput sgr0)\]"  # short dir
+PS1+="\[\033[38;5;2m\]\$(parse_git_branch)"  # space(branch)
+PS1+="\[\033[38;5;202m\]]\[$(tput sgr0)\]"   # ]
+PS1+="\$ \[$(tput sgr0)\]"                   # $space
 
 # Default programs
 export BROWSER=/usr/bin/firefox
@@ -50,3 +63,7 @@ export FZF_DEFAULT_COMMAND="find -L"
 
 # to use for getting branch name in PS1
 # git branch | grep '^\*' | sed 's/^\*\s//g'
+
+# Git aliases
+alias gitlog="git log --all --decorate --oneline --graph"
+alias gs="git status"

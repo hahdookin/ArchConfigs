@@ -16,10 +16,8 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 " Add or remove your Bundles here:
 NeoBundle 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
 NeoBundle 'tomasiser/vim-code-dark'
-NeoBundle 'octol/vim-cpp-enhanced-highlight'
 NeoBundle 'ap/vim-buftabline'
-NeoBundle 'morhetz/gruvbox'
-NeoBundle 'drewtempelmeyer/palenight.vim'
+NeoBundle 'junegunn/fzf.vim'
 
 " Treesitter stuff
 NeoBundle 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -29,10 +27,6 @@ NeoBundle 'nvim-treesitter/playground'
 NeoBundle 'neovim/nvim-lspconfig'
 NeoBundle 'hrsh7th/nvim-compe'
 NeoBundle 'ray-x/lsp_signature.nvim'
-
-
-" You can specify revision/branch/tag.
-NeoBundle 'Shougo/vimshell', { 'rev' : '3787e5' }
 
 " Required:
 call neobundle#end()
@@ -155,7 +149,7 @@ end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'rust_analyzer', 'bashls', 'clangd', 'tsserver' }
+local servers = { 'rust_analyzer', 'bashls', 'pyright', 'clangd', 'tsserver' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
@@ -170,4 +164,3 @@ EOF
 lua vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
 
 lua require'lsp_signature'.on_attach()
-
