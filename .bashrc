@@ -10,7 +10,6 @@ parse_git_branch() {
 }
 
 # Name infront of command line prompt
-#export PS1="\[\033[38;5;202m\][\[$(tput sgr0)\]\[\033[38;5;214m\]\u\[$(tput sgr0)\]\[\033[38;5;106m\]@\[$(tput sgr0)\]\[\033[38;5;73m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;212m\]\W\[$(tput sgr0)\]\[\033[38;5;202m\]]\[$(tput sgr0)\]\$(parse_git_branch)\[\033[00m\]\$ \[$(tput sgr0)\]"
 export PS1=""
 PS1+="\[\033[38;5;202m\][\[$(tput sgr0)\]"   # [
 PS1+="\[\033[38;5;214m\]\u\[$(tput sgr0)\]"  # chris

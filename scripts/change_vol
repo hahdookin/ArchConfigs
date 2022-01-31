@@ -20,7 +20,11 @@ cur_mute=$(amixer get Master | grep \[o[fn]*\] | sed 's/.*\[\(o[nf]*\)\].*/\1/g'
 mute_set=$([[ $cur_mute == "on" ]] && echo mute || echo unmute)
 
 # If doing mute, handle mute and exit
-[[ $mode == m ]] && { amixer set -q Master $mute_set; exit 1; }
+[[ $mode == m ]] && { 
+    amixer set -q Master $mute_set; 
+    amixer set -q Speaker $mute_set; 
+    exit 0; 
+}
 
 # Increment or decrement amount
 default=10

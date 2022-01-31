@@ -163,4 +163,4 @@ EOF
 " Disable inline error/warning messages
 lua vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
 
-lua require'lsp_signature'.on_attach()
+"lua require'lsp_signature'.on_attach()
