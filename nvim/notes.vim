@@ -35,7 +35,7 @@ syn match notesUnorderedListMinus '^\s*-'
 syn region notesParenBlock start="(" end=")"  contains=notesNumber
 syn region notesParenBlock start="\[" end="]" contains=notesNumber
 syn region notesParenBlock start="{" end="}"  contains=notesNumber
-syn region notesParenBlock start="<" end=">"  contains=notesNumber
+"syn region notesParenBlock start="<" end=">"  contains=notesNumber
 
 " Defintions ($ <DefId> -> <Definition>)
 syn match notesDefStart   '^\s*\$'          nextgroup=notesDefId contains=notesDefId skipwhite

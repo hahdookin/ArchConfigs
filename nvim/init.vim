@@ -14,10 +14,12 @@ call neobundle#begin(expand('/home/chris/.config/nvim/bundle'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Add or remove your Bundles here:
-NeoBundle 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
 NeoBundle 'tomasiser/vim-code-dark'
 NeoBundle 'ap/vim-buftabline'
 NeoBundle 'junegunn/fzf.vim'
+NeoBundle 'vimwiki/vimwiki'
+NeoBundle 'morhetz/gruvbox'
+NeoBundle 'sainnhe/gruvbox-material'
 
 " Treesitter stuff
 NeoBundle 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -71,9 +73,9 @@ tnoremap <leader><Esc> <c-\><c-n>
 " Try to reload Bracey on js write
 au BufWrite *.js silent! BraceyReload
 
-" ----------
+" ====================================
 "  Compe settings
-" ----------
+" ====================================
 set completeopt=menuone,noselect
 let g:compe = {}
 let g:compe.enabled = v:true

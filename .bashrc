@@ -66,3 +66,14 @@ export FZF_DEFAULT_COMMAND="find -L"
 # Git aliases
 alias gitlog="git log --all --decorate --oneline --graph"
 alias gs="git status"
+
+# FZF through history and run the command
+function fzfhist() {
+    eval $(history | cut -c 8- | fzf)
+}
+
+# FZF through branches and checkout
+function gitcheckout {
+    git checkout $(git branch | fzf)
+}
+

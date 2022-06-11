@@ -1,6 +1,3 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => General
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
 set history=500
 
@@ -16,9 +13,6 @@ au FocusGained,BufEnter * checktime
 " like <leader>w saves the current file
 let mapleader = ","
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => VIM user interface
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
 
@@ -30,6 +24,10 @@ source $VIMRUNTIME/menu.vim
 
 " Turn on the Wild menu
 set wildmenu
+
+" Specify the behavior when switching between buffers 
+set switchbuf=useopen
+set stal=2
 
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
@@ -95,8 +93,18 @@ set foldcolumn=1
 syntax enable 
 set t_Co=256
 set t_ut=
-set termguicolors
+if has('termguicolors')
+    set termguicolors
+endif
 colorscheme codedark
+
+" Gruvbox settings
+if has("nvim")
+    let g:gruvbox_bold = 0
+    let g:gruvbox_italic = 0
+    let g:gruvbox_contrast_dark = "medium"
+endif
+"colorscheme gruvbox
 
 set clipboard+=unnamedplus
 
@@ -146,8 +154,30 @@ set wrap "Wrap lines
 " (g)oto (b)uffer
 nnoremap gb :ls<CR>:b  
 
-nnoremap <leader>tt :split term://bash<CR>10<C-W>-<C-W>r
-nnoremap <leader>tr 10<C-W>-
+" Toggle a terminal window at the bottom of the screen
+let g:toggled = #{init: 0, bufnr: 0, winnr: 0, open: 0}
+function ToggleTerm()
+    if !g:toggled.init
+        split term://bash
+        let g:toggled.bufnr = uniq(map(filter(getwininfo(), 'v:val.terminal'), 'v:val.bufnr'))[0]
+        let g:toggled.init = 1
+    endif
+    if g:toggled.open
+        call win_execute(g:toggled.winnr, 'close')
+        let g:toggled.open = 0
+    else
+        exec "sbuffer " . g:toggled.bufnr
+        resize -8
+        exec "normal \<c-w>r"
+        let g:toggled.winnr = win_getid()
+        let g:toggled.open = 1
+    endif
+endfunction
+
+nnoremap <silent> <leader>tt :call ToggleTerm()<CR>
+tnoremap <silent> <leader>tt <C-\><C-n>:call ToggleTerm()<CR>
+nnoremap <leader>te :e term://bash<CR>
+
 let g:NERDTreeWinPos="left"
 nnoremap <leader>tf :NERDTree<CR>
 
@@ -163,8 +193,8 @@ nnoremap gT :bprev<CR>
 " FZF buffers
 nnoremap <leader>ff :Buffers<CR>
 nnoremap <leader>fl :Lines<CR>
-nnoremap <leader>fg :call FuzzyFiles()<CR>
 
+" FZF Files depending on whether or not in a git repo
 function FuzzyFiles()
     GFiles
     " Error 128 occurs when not in Git repo path
@@ -172,6 +202,7 @@ function FuzzyFiles()
         Files
     endif
 endfunction
+nnoremap <leader>fg :call FuzzyFiles()<CR>
 
 " FZF in cur (d)ir
 nnoremap <leader>fd :FZF<CR>
@@ -213,17 +244,6 @@ map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
-
-" Close the current buffer
-map <leader>bd :Bclose<cr>:tabclose<cr>gT
-
-" Opens a new tab with the current buffer's path
-" Super useful when editing files in the same directory
-map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
-
-" Specify the behavior when switching between buffers 
-set switchbuf=useopen
-set stal=2
 
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -297,7 +317,7 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Fast editing and reloading of vimrc configs
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>e :e! ~/.vim_runtime/my_configs.vim<cr>
+map <leader>e :e! ~/.config/nvim/init.vim<cr>
 autocmd! bufwritepost ~/.vim_runtime/my_configs.vim source ~/.vim_runtime/my_configs.vim
 
 
@@ -332,6 +352,9 @@ endfunction
 " Make sure that enter is never overriden in the quickfix window
 autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 
+" Languages that should use 2 space tabs
+"autocmd Filetype *.css,*.vue,*.html setlocal tabstop=4
+
 """"""""""""""""""""""""""""""
 " => Python section
 """"""""""""""""""""""""""""""
@@ -353,11 +376,6 @@ if exists('$TMUX')
         set term=screen-256color 
     endif
 endif
-
-""""""""""""""""""""""""""""""
-" => Twig section
-""""""""""""""""""""""""""""""
-autocmd BufRead *.twig set syntax=html filetype=html
 
 """"""""""""""""""""""""""""""
 " => Markdown
