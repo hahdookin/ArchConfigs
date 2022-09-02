@@ -1,168 +1,513 @@
-"NeoBundle Scripts-----------------------------
-if has('vim_starting')
-  " Required:
-  set runtimepath+=/home/chris/.config/nvim/bundle/neobundle.vim/
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Christopher Pane (hahdookin) .vimrc
+"
+" ChrisPaneCS@gmail.com
+" https://www.chrispane.dev
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Set plugin directories
+set packpath-=~/.vim
+set packpath+=~/.vim/common
+if has("nvim")
+    set packpath+=~/.vim/nvim
+else
+    set packpath+=~/.vim/vim
 endif
 
-set runtimepath+=/home/chris/.config/bundle/
 
-" Required:
-call neobundle#begin(expand('/home/chris/.config/nvim/bundle'))
+let mapleader = ","
 
-" Let NeoBundle manage NeoBundle
-" Required:
-NeoBundleFetch 'Shougo/neobundle.vim'
+let g:colorscheme = "spaceduck"
 
-" Add or remove your Bundles here:
-NeoBundle 'tomasiser/vim-code-dark'
-NeoBundle 'ap/vim-buftabline'
-NeoBundle 'junegunn/fzf.vim'
-NeoBundle 'vimwiki/vimwiki'
-NeoBundle 'morhetz/gruvbox'
-NeoBundle 'sainnhe/gruvbox-material'
+filetype plugin on
+filetype indent on
 
-" Treesitter stuff
-NeoBundle 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-NeoBundle 'nvim-treesitter/playground'
 
-" LSP stuff
-NeoBundle 'neovim/nvim-lspconfig'
-NeoBundle 'hrsh7th/nvim-compe'
-NeoBundle 'ray-x/lsp_signature.nvim'
+syntax enable
 
-" Required:
-call neobundle#end()
+set history=500
 
-" Required:
-filetype plugin indent on
+" Set to auto read when a file is changed from the outside
+set autoread
+" au FocusGained,BufEnter * checktime
 
-" If there are uninstalled bundles found on startup,
-" this will conveniently prompt you to install them.
-NeoBundleCheck
-"End NeoBundle Scripts-------------------------
+" 7 lines to the cursor
+set so=7
 
-set runtimepath+=~/.vim_runtime
+let $LANG='en'
+set langmenu=en
+set encoding=utf8
+set ffs=unix,dos,mac
+set clipboard+=unnamedplus
 
-source ~/.vim_runtime/vimrcs/basic.vim
-source ~/.vim_runtime/vimrcs/plugins_config.vim
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
 
-" Enable tree-sitter
-lua <<EOF
-  require'nvim-treesitter.configs'.setup {
-    ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-    ignore_install = {}, -- List of parsers to ignore installing
-    highlight = {
-      enable = true,              -- false will disable the whole extension
-      disable = {},  -- list of language that will be disabled
-    },
-  }
-EOF
+set hidden
+set switchbuf=useopen
+set stal=2
 
-" ====================================
-"  Terminal settings
-" ====================================
-"  Window navigation
+" set splitbelow
+set splitright
+
+set wildmenu
+set wildignore=*.o,*~,*.pyc
+set wildignorecase
+if has("win16") || has("win32")
+    set wildignore+=.git\*,.hg\*,.svn\*
+else
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+endif
+"set wildmode=list:longest,full
+set wildmode=full
+set wildoptions=pum
+
+set number relativenumber
+set cursorline
+set equalalways
+set ruler
+
+set foldcolumn=1
+
+set cmdheight=1
+set showcmd
+
+set backspace=eol,start,indent
+set whichwrap+=<,>,h,l
+
+" Searching
+set ignorecase
+set smartcase
+set hlsearch
+set incsearch
+
+set lazyredraw
+
+set magic
+
+" Matching delims
+set showmatch
+set mat=2
+
+" Disable error notifs
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+set belloff=all
+
+" Turn backup off, since most stuff is in SVN, git etc. anyway...
+set nobackup
+set nowb
+set noswapfile
+
+" Tabs
+set expandtab
+set smarttab
+set shiftwidth=4
+set tabstop=4
+
+" Indent
+set ai "Auto indent
+set si "Smart indent
+set wrap "Wrap lines
+
+" Always show the status line
+set laststatus=2
+" Format the status line
+" set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
+
+" Change cursor shape depending on insert mode
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
+"colorscheme spaceduck
+exec "colorscheme " . g:colorscheme
+set bg=dark
+
+if has('termguicolors')
+    set termguicolors
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General Mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Remap VIM 0 to first non-blank character
+map 0 ^
+
+nnoremap <silent><leader>no :nohlsearch<CR>
+
+" Make Y behave like D and C
+nnoremap Y y$
+
+" Swap buffers like swapping tabs
+nnoremap gt :bnext<CR>
+nnoremap gT :bprev<CR>
+
+" Poor man's fuzzy finding
+" This may break things: BEWARE
+set path+=**
+nnoremap <C-p> :find ./
+
+" Window navigation
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" Spell checking
+map <leader>ss :setlocal spell!<cr>
+
+" Return to last edit position when opening files (You want this!)
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" Delete trailing white space on save, useful for some filetypes ;)
+fun! CleanExtraSpaces()
+    let save_cursor = getpos(".")
+    let old_query = getreg('/')
+    silent! %s/\s\+$//e
+    call setpos('.', save_cursor)
+    call setreg('/', old_query)
+endfun
+
+autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Vimgrep
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+fun! BuffersList()
+    return range(1, bufnr('$'))
+            \ ->filter('buflisted(v:val)')
+            \ ->map('bufname(v:val)')
+endfun
+command! -nargs=* FindSymbol execute "vim" . " '<args>' " .  join(BuffersList())
+" (f)ind (a)ll
+nnoremap <leader>fa :execute "FindSymbol " . expand("<cword>")<CR>
+" (f)ind (s)ymbol
+nnoremap <leader>fs :FindSymbol
+
+command! Find :exec "vim " . expand("<cword>") . " ##"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Helper functions
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Don't close window, when deleting a buffer
+function! <SID>BufcloseCloseIt()
+    let l:currentBufNum = bufnr("%")
+    let l:alternateBufNum = bufnr("#")
+
+    if buflisted(l:alternateBufNum)
+        buffer #
+    else
+        bnext
+    endif
+
+    if bufnr("%") == l:currentBufNum
+        new
+    endif
+
+    if buflisted(l:currentBufNum)
+        execute("bdelete! ".l:currentBufNum)
+    endif
+endfunction
+command! Bclose call <SID>BufcloseCloseIt()
+nnoremap <leader>bd :Bclose<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Fast editing and reloading of vimrc configs
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>e :e! ~/.vim/init.vim<CR>
+map <leader>m :source %<CR>
+autocmd! bufwritepost ~/.vim/init.vim source ~/.vim/init.vim
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Persistent udno
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+try
+    set undodir=~/.vim/temp_dirs/undodir
+    set undofile
+catch
+endtry
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Quickfix stuff
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>co :cope<cr>
+map <leader>cl :cclose<CR>
+map <leader>cc :call ToggleQuickFix()<CR>
+
+function! ToggleQuickFix()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
+endfunction
+
+" Make sure that enter is never overriden in the quickfix window
+autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Terminal stuff
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"  Window navigation in terminal
 tnoremap <c-h> <c-\><c-n><c-w>h
 tnoremap <c-j> <c-\><c-n><c-w>j
 tnoremap <c-k> <c-\><c-n><c-w>k
 tnoremap <c-l> <c-\><c-n><c-w>l
 
-" Remap escape
+" Escape in terminal mode
 tnoremap <leader><Esc> <c-\><c-n>
+" Toggle a terminal window at the bottom of the screen
+" let g:toggled = #{init: 0, bufnr: 0, winnr: 0, open: 0}
+" function ToggleTerm()
+"     if !g:toggled.init
+"         " Start a terminal buffer and remember its buffer number
+"         if has("nvim")
+"             bot split term://bash
+"         else
+"             bot terminal ++kill=hup
+"         endif
+"         let g:toggled.bufnr = uniq(map(filter(getwininfo(), 'v:val.terminal'), 'v:val.bufnr'))[0]
+"         let g:toggled.init = 1
+"     endif
+"     if g:toggled.open
+"         call win_execute(g:toggled.winnr, 'close')
+"         let g:toggled.open = 0
+"     else
+"         exec "bot sbuffer " . g:toggled.bufnr
+"         exec "resize " . float2nr(&lines * g:terminal_proportion)
+"         setlocal winfixheight
+"         setlocal nonumber norelativenumber
+"         let g:toggled.winnr = win_getid()
+"         let g:toggled.open = 1
+"     endif
+" endfunction
 
-" Try to reload Bracey on js write
-au BufWrite *.js silent! BraceyReload
+" " Toggle term maps
+" nnoremap <silent> <leader>tt :call ToggleTerm()<CR>
+" tnoremap <silent> <leader>tt <C-\><C-n>:call ToggleTerm()<CR>
 
-" ====================================
-"  Compe settings
-" ====================================
-set completeopt=menuone,noselect
-let g:compe = {}
-let g:compe.enabled = v:true
-let g:compe.autocomplete = v:true
-let g:compe.debug = v:false
-let g:compe.min_length = 1
-let g:compe.preselect = 'enable'
-let g:compe.throttle_time = 80
-let g:compe.source_timeout = 200
-let g:compe.incomplete_delay = 400
-let g:compe.max_abbr_width = 100
-let g:compe.max_kind_width = 100
-let g:compe.max_menu_width = 100
-let g:compe.documentation = v:true
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => netrw
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:vim_starting_directory = getcwd()
+let g:netrw_last_directory = g:vim_starting_directory
+let g:netrw_proportion = 0.13    " Amount of screen occupied by netrw :Lexplore
 
-let g:compe.source = {}
-let g:compe.source.path = v:true
-let g:compe.source.buffer = v:true
-let g:compe.source.calc = v:true
-let g:compe.source.nvim_lsp = v:true
-let g:compe.source.nvim_lua = v:true
-let g:compe.source.vsnip = v:true
-inoremap <silent><expr> <C-Space> compe#complete()
-inoremap <silent><expr> <CR>      compe#confirm('<CR>')
-inoremap <silent><expr> <C-e>     compe#close('<C-e>')
-inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
-inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+" netrw settings
+let g:netrw_banner = 0 " Hide banner
+let g:netrw_altv = 1 "
+let g:netrw_altfile = 1
+let g:netrw_winsize = -1 * floor(&columns * g:netrw_proportion) " Abs value = number of columns explorer takes up
+let g:netrw_keepdir = 0
+let g:netrw_browse_split = 4 " Split into previous window
+let g:netrw_localcpdircmd = 'cp -r' " Recursively copy dir
+augroup Netrw
+    autocmd!
+    autocmd FileType netrw call s:NetrwMapping()
+augroup END
 
 
-" ----------
-"  LSP Setups
-" ----------
-let g:ale_hover_to_floating_preview = 1
-let g:ale_linters.rust = ['cargo', 'rls']
-let g:ale_rust_rls_toolchain = 'stable'
+" Netrw mappings
+function! s:NetrwMapping()
+    if hasmapto('<Plug>NetrwRefresh')
+        unmap <buffer> <C-l>
+    endif
+    " Ranger-like navigation
+    nmap <buffer> h -^
+    nmap <buffer> l <CR>
+
+    nmap <buffer> . gh
+    nmap <buffer> P <C-w>z
+
+    nmap <buffer> <C-r> :e .<CR>
+
+    nmap <buffer> <C-g> :Bclose<CR>:exec "e " . g:vim_starting_directory<CR>
+endfunction
+
+function s:CleanUselessBuffers()                                                   
+    for buf in getbufinfo()                                                                                               
+        if buf.name == "" && buf.changed == 0 && buf.loaded == 1                   
+            :execute ':bdelete ' . buf.bufnr                                       
+        endif                                                                      
+    endfor                                                                         
+endfunction                                                                 
+                                                                                   
+function s:ToggleLex()                                                             
+    call s:CleanUselessBuffers()                                                   
+
+    " let g:netrw_last_directory = getcwd()
+                                                                                   
+    " we iterate through the buffers again because some netrw buffers are          
+    " skipped after we browsed to a different location and hence the name          
+    " of the window changed (no longer '')                                         
+    let flag = 0                                                                   
+    for buf in getbufinfo()                                                        
+        if (get(buf.variables, "current_syntax", "") == "netrwlist") && buf.changed == 0 && buf.loaded == 1
+            :execute  ':bwipeout ' . buf.bufnr                                      
+            let flag = 1                                                           
+        endif                                                                      
+    endfor                                                                         
+                                                                                   
+    if !flag                                                                    
+        let g:netrw_winsize = -1 * floor(&columns * g:netrw_proportion)
+        :Lexplore                                                               
+        " exec "e " . g:netrw_last_directory
+    endif                                                                       
+endfunction
+nnoremap <silent> <leader>tf :call <SID>ToggleLex()<CR>
+
+hi! link netrwMarkFile Todo
+
+""""""""""""""""""""""""""""""
+" => Shell section
+""""""""""""""""""""""""""""""
+au FileType gitcommit call setpos('.', [0, 1, 1, 0])
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => miniterm.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:terminal_proportion = 0.28 " Amount of screen occupied by toggled terminal
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Lightline settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:lightline = {
+      \ 'colorscheme': g:colorscheme,
+      \ 'active': {
+      \   'left': [ ['mode'], ['filename', 'modified'], ['fugitive', 'readonly' ] ],
+      \   'right': [ [ 'lineinfo'] , ['percent'], ['filetype', 'paste'] ]
+      \ },
+      \ 'component': {
+      \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
+      \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
+      \   'fugitive': '%{exists("*FugitiveHead")?FugitiveHead():""}',
+      \   'paste': '%{&lines}'
+      \ },
+      \ 'component_visible_condition': {
+      \   'readonly': '(&filetype!="help"&& &readonly)',
+      \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
+      \   'fugitive': '(exists("*FugitiveHead") && ""!=FugitiveHead())'
+      \ },
+      \ 'separator': { 'left': ' ', 'right': ' ' },
+      \ 'subseparator': { 'left': ' ', 'right': ' ' }
+      \ }
 
 
-lua << EOF
-local nvim_lsp = require('lspconfig')
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => FZF
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" FZF buffers
+nnoremap <leader>ff :Buffers<CR>
+nnoremap <leader>fl :Lines<CR>
 
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+" FZF Files depending on whether or not in a git repo
+function FuzzyFiles()
+    GFiles
+    " Error 128 occurs when not in Git repo path
+    if v:shell_error == 128
+        Files
+    endif
+endfunction
+nnoremap <leader>fg :call FuzzyFiles()<CR>
 
-  -- Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+" FZF in cur (d)ir
+nnoremap <leader>fd :FZF<CR>
+" FZF (i)n
+nnoremap <leader>fi :FZF 
 
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
 
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<C-i>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Rainbow Parenthesis
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:rainbow_active = 0
+noremap <leader>rr :RainbowToggle<CR>
 
-end
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => COC.nvim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set updatetime=300
+" Tab will complete current best match if the PUM is visible, else it will
+" just enter a \t
+inoremap <silent><expr> <Tab> coc#pum#visible() ? coc#pum#confirm() : "\<TAB>"
+" inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+inoremap <silent><expr> <c-space> coc#refresh()
 
--- Use a loop to conveniently call 'setup' on multiple servers and
--- map buffer local keybindings when the language server attaches
-local servers = { 'rust_analyzer', 'bashls', 'pyright', 'clangd', 'tsserver' }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach,
-    flags = {
-      debounce_text_changes = 150,
-    }
-  }
-end
-EOF
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Startscreen
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:start_screen_mru_count = 7 " Number of MRU files to show on start screen
+" Path patterns to ignore when showing MRU on start screen
+let g:start_screen_mru_ignore = [
+    \ "^/usr/share/",
+    \ "vimwiki"
+    \]
 
-" Disable inline error/warning messages
-lua vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => vimwiki
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+fun! PushVimwikiChanges()
+    if &ft == "vimwiki"
+        Git add .
+        Git commit -m "regular updates"
+        Git push -u origin main
+    endif
+endfun
+fun! PullVimwikiChanges()
+    if &ft == "vimwiki"
+        Git pull
+    endif
+endfun
 
-"lua require'lsp_signature'.on_attach()
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => minifuzzy.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Builds a Unix find command that ignores directories present in the
+" "ignore_directories" list
+let g:ignore_directories = [ 'node_modules', '.git' ]
+fun! BuildFindCommand()
+    let cmd_exprs = g:ignore_directories
+                    \ ->mapnew('"-type d -name " . v:val . " -prune"')
+    call add(cmd_exprs, '-type f -print')
+    return 'find . ' . cmd_exprs->join(' -o ')
+endfun
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Gruvbox
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:gruvbox_bold = 0
+let g:gruvbox_italic = 0
+let g:gruvbox_contrast_dark = "medium"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Misc.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function StreamerMode()
+    " 13 pluses
+    set norelativenumber
+    set showtabline=0
+    set scrolloff=0
+    set nocursorline
+
+    " Disable completion menu
+    set completeopt=
+    call compe#setup({'enabled':v:false})
+endfunction
+
+fun! MyFuzFunc(A, L, P)
+    let l:results = split(system("find . -type f -not -path '*/\\.git/*'"), "\n")
+    return matchfuzzy(l:results, a:A)
+endfun
+
+set wcm=<C-Z>
+cnoremap <C-TAB> <C-Z><C-P>
+command! -nargs=1 -complete=customlist,MyFuzFunc Find edit <args>
+nnoremap <C-p> :Find ./<C-Z><C-P>
+
+map <leader>pd <Cmd>call popup_clear()<CR>
+
