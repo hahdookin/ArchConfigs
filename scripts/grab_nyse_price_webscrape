@@ -4,18 +4,21 @@
 # a ticker symbol and grabs the price.
 # Called in update_status_bar
  
+# Args: ticker name
 grab_nyse_price_webscrape() {
 
     [[ -z $1 ]] && { echo "missing option"; return; }
 
-    local symb=$1
+    local symb=$(echo $1 | tr [:lower:] [:upper:])
 
-    local reactid="49" # could be 50 sometimes
+    # Webscrape for this HTML segment
+    local q="<fin-streamer class=\"Fw(b) Fz(36px) Mb(-4px) D(ib)\" data-symbol=\"${symb}\" data-test=\"qsp-price\" data-field=\"regularMarketPrice\" data-trend=\"none\" data-pricehint=\"[0-9]\" value=\"[0-9]\+.[0-9]\+\" active=\"\">"
 
     local price=$(curl -s https://finance.yahoo.com/quote/${symb} \
-      | grep "data-reactid=\"${reactid}\"" \
-      | sed "s/.*data-reactid=\"${reactid}\">\([0-9]*\.[0-9][0-9]\)<.*/\1/g" \
+      | grep "$q" \
+      | sed "s/.*$q\([0-9]*\.[0-9][0-9]\)<.*/\1/g"
     )
 
-    (( ${#price} > 8 )) && echo $price || echo ""
+    # Print the price if the response is short, AKA not garbled HTML
+    (( ${#price} < 8 )) && echo $price || echo ""
 }

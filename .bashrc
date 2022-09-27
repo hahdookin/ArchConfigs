@@ -23,29 +23,23 @@ PS1+="\$ \[$(tput sgr0)\]"                   # $space
 
 # Default programs
 export BROWSER=/usr/bin/firefox
-export EDITOR=/usr/bin/nvim
+export EDITOR=/usr/bin/vim
 
 # Aliases
 alias ls='ls -F --color=auto'
 alias la='ls -a -F --color=auto'
 alias ll='ls -a -l -F --color=auto'
-alias vi='nvim'
-alias vim='nvim'
-alias mutt='neomutt'
-alias mail='neomutt'
+# alias vi='nvim'
+# alias vim='nvim'
+alias vi='vim'
 alias vol='alsamixer'
 alias mm='make && ./main'
 alias canvas='(firefox --new-window "https://njit.instructure.com/?login_success=1" & disown) > /dev/null 2>&1'
 
-alias lisp='sbcl'
-alias prolog='swi-prolog'
-
 . "$HOME/.cargo/env"
 
-[[ -f "$HOME/sshkeys" ]] && source "$HOME/sshkeys"
+[[ -f ~/sshkeys ]] && source ~/sshkeys
 source /usr/share/fzf/completion.bash && source /usr/share/fzf/key-bindings.bash
-
-alias todo=~/tests/rusttest/a/target/debug/a
 
 # $1 number to convert
 # $2 base to convert to (default 2)
@@ -58,14 +52,14 @@ function base() {
     node -p "let x=Number($num).toString($to);let s='';if($width -x.length>0)[...Array($width -x.length)].forEach(()=>s+='0');s+x;"
 }
 
-export FZF_DEFAULT_COMMAND="find -L"
-
 # to use for getting branch name in PS1
 # git branch | grep '^\*' | sed 's/^\*\s//g'
 
 # Git aliases
 alias gitlog="git log --all --decorate --oneline --graph"
 alias gs="git status"
+
+export FZF_DEFAULT_COMMAND="find -L"
 
 # FZF through history and run the command
 function fzfhist() {
@@ -77,3 +71,6 @@ function gitcheckout {
     git checkout $(git branch | fzf)
 }
 
+# 3DS Dev
+export DEVKITARM=/opt/devkitpro/devkitARM
+export DEVKITPRO=/opt/devkitpro

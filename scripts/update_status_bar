@@ -4,14 +4,14 @@
 # Called from .xinitrc
 
 time_between_updates=5
+time_between_stock_updates=600
 
 source ~/scripts/grab_nyse_price_webscrape
 
 # Ticker symbols to check prices of
 symbols=(
     "SPOT"
-    "DASH"
-    "CHWY"
+    "TSLA"
 )
 prices=( )
 
@@ -21,9 +21,10 @@ prev=( )
 # Time of last update
 last=0
 
-# Updates the prices of ticker symbols listed above
-# if it is the first run through the program or
-# it is trading hours and its been 10 mins since last update
+# Updates the prices of ticker symbols listed above if:
+# - It is the first run through the program
+# OR
+# - It is trading hours and its been 10 mins since last update
 update_prices() {
     local time_info=( $(date +'%-H %u %s') )
 
@@ -33,8 +34,9 @@ update_prices() {
     local now=${time_info[2]}
 
     local first_run=$(( $last == 0 )) 
-    local trading_hours=$(( $weekday < 6 && $hour >= 9 && $hour < 16 && $now - $last > 600 )) 
-    if (( $first_run || $trading_hours )); then
+    local trading_hours=$(( weekday < 6 && hour >= 9 && hour < 16 && now - last > time_between_stock_updates )) 
+    if (( first_run || trading_hours )); then
+        echo "Updating prices"
         for (( i=0; i < ${#symbols[@]}; i++ )); do
             prev[$i]=${prices[$i]}
             prices[$i]=$(grab_nyse_price_webscrape ${symbols[$i]})
@@ -47,17 +49,22 @@ update_status_bar() {
     # Build up this string
     local res=""
     local delim=" | "
+    # push_status() {
+    #     res+=$1
+    #     res+=$delim
+    # }
 
     # NYSE stock price 
-    #update_prices
-    #for (( i=0; i < ${#symbols[@]}; i++ )); do
-    #    # Choose plus or minus to indicate up or down
-    #    #price_up=$(python -c "print(int(${prices[$i]} > ${prev[$i]:-0}))")
-    #    #(( $price_up )) && sign='+' || sign='-'
-    #    #res+="${symbols[$i]}: ${sign}${prices[$i]}"
-    #    res+="${symbols[$i]}: ${prices[$i]}"
-    #    res+=$delim
-    #done
+    update_prices
+    echo "Updated"
+    for (( i=0; i < ${#symbols[@]}; i++ )); do
+        # Choose plus or minus to indicate up or down
+        #price_up=$(python -c "print(int(${prices[$i]} > ${prev[$i]:-0}))")
+        #(( $price_up )) && sign='+' || sign='-'
+        #res+="${symbols[$i]}: ${sign}${prices[$i]}"
+        res+="${symbols[$i]}: ${prices[$i]}"
+        res+=$delim
+    done
 
     # Time & date
     res+=$(date +'%a %b %d %I:%M %p')
