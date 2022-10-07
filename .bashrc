@@ -33,7 +33,6 @@ alias ll='ls -a -l -F --color=auto'
 # alias vim='nvim'
 alias vi='vim'
 alias vol='alsamixer'
-alias mm='make && ./main'
 alias canvas='(firefox --new-window "https://njit.instructure.com/?login_success=1" & disown) > /dev/null 2>&1'
 
 . "$HOME/.cargo/env"
