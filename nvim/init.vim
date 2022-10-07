@@ -4,7 +4,6 @@
 " ChrisPaneCS@gmail.com
 " https://www.chrispane.dev
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 " Set plugin directories
 set packpath-=~/.vim
 set packpath+=~/.vim/common
@@ -14,16 +13,17 @@ else
     set packpath+=~/.vim/vim
 endif
 
-
 let mapleader = ","
 
 let g:colorscheme = "spaceduck"
 
 filetype plugin on
 filetype indent on
-
-
 syntax enable
+
+if has('termguicolors')
+    set termguicolors
+endif
 
 set history=500
 
@@ -58,7 +58,7 @@ if has("win16") || has("win32")
 else
     set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 endif
-"set wildmode=list:longest,full
+
 set wildmode=full
 set wildoptions=pum
 
@@ -114,23 +114,19 @@ set wrap "Wrap lines
 
 " Always show the status line
 set laststatus=2
-" Format the status line
-" set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
 
 " Change cursor shape depending on insert mode
 let &t_SI = "\e[6 q"
 let &t_EI = "\e[2 q"
 
+" Get termguicolors to work on st
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 "colorscheme spaceduck
 exec "colorscheme " . g:colorscheme
+" set bg=light
 set bg=dark
-
-if has('termguicolors')
-    set termguicolors
-endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Mappings
@@ -149,8 +145,8 @@ nnoremap gT :bprev<CR>
 
 " Poor man's fuzzy finding
 " This may break things: BEWARE
-set path+=**
-nnoremap <C-p> :find ./
+" set path+=**
+" nnoremap <C-p> :find ./
 
 " Window navigation
 map <C-j> <C-W>j
@@ -189,8 +185,6 @@ nnoremap <leader>fa :execute "FindSymbol " . expand("<cword>")<CR>
 " (f)ind (s)ymbol
 nnoremap <leader>fs :FindSymbol
 
-command! Find :exec "vim " . expand("<cword>") . " ##"
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -221,7 +215,7 @@ nnoremap <leader>bd :Bclose<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>e :e! ~/.vim/init.vim<CR>
 map <leader>m :source %<CR>
-autocmd! bufwritepost ~/.vim/init.vim source ~/.vim/init.vim
+autocmd! BufWritePost ~/.vim/init.vim source ~/.vim/init.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Persistent udno
@@ -235,16 +229,28 @@ endtry
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Quickfix stuff
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>co :cope<cr>
-map <leader>cl :cclose<CR>
 map <leader>cc :call ToggleQuickFix()<CR>
+map <leader>ll :call ToggleLocationList()<CR>
 
 function! ToggleQuickFix()
     if empty(filter(getwininfo(), 'v:val.quickfix'))
         copen
     else
         cclose
+        lclose
     endif
+endfunction
+function! ToggleLocationList()
+    try
+        if empty(filter(getwininfo(), 'v:val.quickfix'))
+            lopen
+        else
+            cclose
+            lclose
+        endif
+    catch /E776/
+        return
+    endtry
 endfunction
 
 " Make sure that enter is never overriden in the quickfix window
@@ -297,7 +303,7 @@ tnoremap <leader><Esc> <c-\><c-n>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:vim_starting_directory = getcwd()
 let g:netrw_last_directory = g:vim_starting_directory
-let g:netrw_proportion = 0.13    " Amount of screen occupied by netrw :Lexplore
+let g:netrw_proportion = 0.18    " Amount of screen occupied by netrw :Lexplore
 
 " netrw settings
 let g:netrw_banner = 0 " Hide banner
@@ -312,6 +318,7 @@ augroup Netrw
     autocmd FileType netrw call s:NetrwMapping()
 augroup END
 
+nnoremap gx :exec '!"$BROWSER" ' . shellescape("<cWORD>")<CR>
 
 " Netrw mappings
 function! s:NetrwMapping()
@@ -435,8 +442,129 @@ set updatetime=300
 " Tab will complete current best match if the PUM is visible, else it will
 " just enter a \t
 inoremap <silent><expr> <Tab> coc#pum#visible() ? coc#pum#confirm() : "\<TAB>"
-" inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+inoremap <silent><expr> <s-tab> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 inoremap <silent><expr> <c-space> coc#refresh()
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+set signcolumn=yes
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+" inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+"                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Use  and  to navigate diagnostics
+" Use  to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" " Formatting selected code.
+" xmap <leader>f  <Plug>(coc-format-selected)
+" nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Applying codeAction to the selected region.
+" Example:  for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Run the Code Lens action on the current line.
+nmap <leader>cl  <Plug>(coc-codelens-action)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" Use CTRL-S for selections ranges.
+" Requires 'textDocument/selectionRange' support of language server.
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" Add  command to format current buffer.
+command! -nargs=0 Format :call CocActionAsync('format')
+
+" Add  command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add  command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+
+" Add (Neo)Vim's native statusline support.
+" NOTE: Please see  for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline.
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Mappings for CoCList
+" Show all diagnostics.
+nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Startscreen
@@ -451,18 +579,90 @@ let g:start_screen_mru_ignore = [
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vimwiki
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-fun! PushVimwikiChanges()
-    if &ft == "vimwiki"
-        Git add .
-        Git commit -m "regular updates"
-        Git push -u origin main
-    endif
+" Date stuff
+let g:date_format = "%a %b %d %l:%M%p %Y %Z"
+fun! InsertDate()
+    return systemlist('date --date="' . input("Date: ") . '" +"' . g:date_format . '"')[0]
 endfun
-fun! PullVimwikiChanges()
-    if &ft == "vimwiki"
-        Git pull
+noremap <leader>ad  :exec "normal! a<" . InsertDate() . ">"<CR>
+
+augroup VimwikiDates
+    au!
+    au BufReadPost,BufWritePost *.wiki call DateHighlighting()
+augroup END
+
+let g:date_positions = []
+
+fun! DateHighlighting()
+    let g:date_positions = []
+    let save_view = winsaveview()
+    let save_pos = getpos('.')
+    let bn = bufnr()
+    normal gg0
+    hi DatePAST ctermfg=DarkGrey
+    hi DateLTDAY ctermfg=DarkRed
+    hi DateLT2DAY ctermfg=Red
+    hi DateLTWEEK ctermfg=Yellow
+    hi DateLTMONTH ctermfg=Green
+    hi DateGTMONTH ctermfg=Blue
+    if empty(prop_type_get('DateLTDAY', {'bufnr': bn}))
+        call prop_type_add('DatePAST', { 'bufnr': bn, 'highlight': 'DatePAST', 'combine': 0 }) 
+        call prop_type_add('DateLTDAY', { 'bufnr': bn, 'highlight': 'DateLTDAY', 'combine': 0 }) 
+        call prop_type_add('DateLT2DAY', { 'bufnr': bn, 'highlight': 'DateLT2DAY', 'combine': 0 }) 
+        call prop_type_add('DateLTWEEK', { 'bufnr': bn, 'highlight': 'DateLTWEEK', 'combine': 0 }) 
+        call prop_type_add('DateLTMONTH', { 'bufnr': bn, 'highlight': 'DateLTMONTH', 'combine': 0 }) 
+        call prop_type_add('DateGTMONTH', { 'bufnr': bn, 'highlight': 'DateGTMONTH', 'combine': 0 }) 
     endif
+    while search('<.\{-}>', 'W') != 0
+        let [_, lnum, col, _] = getpos('.')
+        normal f>
+        let endpos = col('.')
+        let date = getline('.')[col : endpos - 2]
+        let now = localtime()
+        let then = strptime(g:date_format, date)
+        if !then
+            " call prop_add(lnum, col, {'bufnr': bn, 'length': endpos - col + 1, 'type': 'DateGTMONTH' })
+            continue
+        endif
+
+
+        let diff = then - now
+
+        let bn = bufnr()
+        call add(g:date_positions, {'lnum': lnum, 'col': col, 'diff': diff, 'bufnr': bn, 'text': getbufline(bn, lnum)[0]})
+
+        let one_day = 86400
+        let two_day = one_day * 2
+        let one_week = one_day * 7
+        let one_month = one_day * 31
+        let one_year = one_day * 365
+
+        let type = ""
+        if diff < 0
+            let type = 'DatePAST'
+        elseif diff < one_day
+            let type = 'DateLTDAY'
+        elseif diff < two_day
+            let type = 'DateLT2DAY'
+        elseif diff < one_week
+            let type = 'DateLTWEEK'
+        elseif diff < one_month
+            let type = 'DateLTMONTH'
+        else
+            let type = 'DateGTMONTH'
+        endif
+
+        call prop_add(lnum, col, {'bufnr': bn, 'length': endpos - col + 1, 'type': type })
+    endwhile
+    call setpos('.', save_pos)
+    call winrestview(save_view)
+    " Sort positions [ [row, col, diff], ... ] by the difference a.k.a. Time
+    " between now and the date.
+    eval g:date_positions->sort({i1,i2 -> i1['diff'] - i2['diff']})
+    call setqflist(g:date_positions, 'r')
 endfun
+
+let g:vimwiki_conceal_pre = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => minifuzzy.vim
@@ -477,6 +677,8 @@ fun! BuildFindCommand()
     return 'find . ' . cmd_exprs->join(' -o ')
 endfun
 
+nnoremap <space> :MinifuzzyBuffers<CR>
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Gruvbox
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -487,18 +689,6 @@ let g:gruvbox_contrast_dark = "medium"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Misc.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function StreamerMode()
-    " 13 pluses
-    set norelativenumber
-    set showtabline=0
-    set scrolloff=0
-    set nocursorline
-
-    " Disable completion menu
-    set completeopt=
-    call compe#setup({'enabled':v:false})
-endfunction
-
 fun! MyFuzFunc(A, L, P)
     let l:results = split(system("find . -type f -not -path '*/\\.git/*'"), "\n")
     return matchfuzzy(l:results, a:A)
