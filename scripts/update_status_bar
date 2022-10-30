@@ -55,16 +55,16 @@ update_status_bar() {
     # }
 
     # NYSE stock price 
-    update_prices
-    echo "Updated"
-    for (( i=0; i < ${#symbols[@]}; i++ )); do
-        # Choose plus or minus to indicate up or down
-        #price_up=$(python -c "print(int(${prices[$i]} > ${prev[$i]:-0}))")
-        #(( $price_up )) && sign='+' || sign='-'
-        #res+="${symbols[$i]}: ${sign}${prices[$i]}"
-        res+="${symbols[$i]}: ${prices[$i]}"
-        res+=$delim
-    done
+    #update_prices
+    #echo "Updated"
+    #for (( i=0; i < ${#symbols[@]}; i++ )); do
+    #    # Choose plus or minus to indicate up or down
+    #    #price_up=$(python -c "print(int(${prices[$i]} > ${prev[$i]:-0}))")
+    #    #(( $price_up )) && sign='+' || sign='-'
+    #    #res+="${symbols[$i]}: ${sign}${prices[$i]}"
+    #    res+="${symbols[$i]}: ${prices[$i]}"
+    #    res+=$delim
+    #done
 
     # Time & date
     res+=$(date +'%a %b %d %I:%M %p')
